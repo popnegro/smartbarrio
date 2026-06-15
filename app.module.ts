@@ -2,6 +2,7 @@ import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/c
 import { ConfigModule } from '@nestjs/config';
 import { CrmModule } from './modules/crm/crm.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 import { TenantMiddleware } from './core/middleware/tenant.middleware';
 import { PrismaService } from './database/prisma.service';
 
@@ -10,6 +11,7 @@ import { PrismaService } from './database/prisma.service';
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     CrmModule,
+    InventoryModule,
   ],
   providers: [PrismaService],
 })

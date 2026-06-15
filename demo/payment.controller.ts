@@ -1,12 +1,16 @@
-import { Controller, Post, Patch, Get, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Patch, Get, Body, Param, UseGuards, Inject } from '@nestjs/common';
 import { JwtAuthGuard } from '../../../../auth/infrastructure/guards/jwt.guard';
 import { CurrentTenant } from '../../../../core/decorators/tenant.decorator';
 import { PrismaService } from '../../../../database/prisma.service';
 import { PaymentStatus } from '../../domain/entities/payment.entity';
+import { GetDashboardStatsUseCase } from '../../application/use-cases/get-dashboard-stats.use-case';
 
 @Controller('payments')
 export class PaymentController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly getDashboardStatsUseCase: GetDashboardStatsUseCase
+  ) {}
 
   // Endpoint público: El cliente informa que ya transfirió
   @Post('report')
@@ -43,8 +47,6 @@ export class PaymentController {
   @UseGuards(JwtAuthGuard)
   @Get('stats')
   async getDashboardStats(@CurrentTenant() tenantId: string) {
-    const payments = await this.prisma.payment.findMany({ where: { tenantId } });
-    // Lógica de agregación para el dashboard (Total recaudado, pendientes, etc.)
-    return { total: 0, pending: 0, approved: 0 }; 
+    return await this.getDashboardStatsUseCase.execute(tenantId);
   }
 }
