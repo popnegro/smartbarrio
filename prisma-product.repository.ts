@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../../database/prisma.service';
-import { IProductRepository } from '../../domain/repositories/product.repository.interface';
-import { Product } from '../../domain/entities/product.entity';
+import { PrismaService } from './prisma.service';
+import { IProductRepository } from './apps/api/src/modules/inventory/domain/repositories/product.repository.interface';
+import { Product } from './apps/api/src/modules/inventory/domain/entities/product.entity';
 
 @Injectable()
 export class PrismaProductRepository implements IProductRepository {
@@ -10,6 +10,9 @@ export class PrismaProductRepository implements IProductRepository {
   async findById(id: string, tenantId: string): Promise<Product | null> {
     const data = await this.prisma.product.findFirst({
       where: { id, tenantId },
+      include: {
+        // En un esquema real, variantes sería una relación. Aquí lo manejamos como Json robusto.
+      }
     });
 
     if (!data) return null;
@@ -46,8 +49,15 @@ export class PrismaProductRepository implements IProductRepository {
   async update(product: Product): Promise<void> {
     const data = product.toJSON();
     await this.prisma.product.update({
-      where: { id: data.id },
-      data: { stock: data.baseStock }
+      where: { 
+        id: data.id,
+        tenantId: data.tenantId 
+      },
+      data: { 
+        stock: data.baseStock,
+        price: data.basePrice,
+        updatedAt: new Date()
+      }
     });
   }
 }

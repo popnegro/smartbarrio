@@ -1,10 +1,12 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { CrmModule } from './modules/crm/crm.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { InventoryModule } from './modules/inventory/inventory.module';
-import { TenantMiddleware } from './core/middleware/tenant.middleware';
-import { PrismaService } from './database/prisma.service';
+import { CrmModule } from './crm.module';
+import { AuthModule } from './auth.module';
+import { InventoryModule } from './inventory.module';
+import { PaymentsModule } from './payments.module';
+import { BuilderModule } from './builder.module';
+import { TenantMiddleware } from './tenant.middleware';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { PrismaService } from './database/prisma.service';
     AuthModule,
     CrmModule,
     InventoryModule,
+    PaymentsModule,
+    BuilderModule,
   ],
   providers: [PrismaService],
 })

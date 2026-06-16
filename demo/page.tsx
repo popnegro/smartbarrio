@@ -18,7 +18,11 @@ export default function DashboardPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: async () => {
-      const res = await fetch("/api/payments/stats");
+      const res = await fetch("/api/payments/stats", {
+        headers: {
+          "X-Tenant-ID": "tenant_default_123", // ID de prueba para entorno local
+        },
+      });
       return res.json();
     }
   });
@@ -113,7 +117,7 @@ export default function DashboardPage() {
                   {data.seoStatus.localRanking.keywords.map((kw: string) => (
                     <span key={kw} className="rounded-md bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase">
                       {kw}
-                    </li>
+                    </span>
                   ))}
                 </div>
               </div>
